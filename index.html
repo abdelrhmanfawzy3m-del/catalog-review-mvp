@@ -51,12 +51,12 @@ dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0
           <textarea id="reviewerWritten" class="field" rows="4" placeholder="اكتب ملاحظتك هنا..." style="margin-top:9px"></textarea>
           <div class="row" style="margin-top:9px">
             <button id="reviewerRecord" class="btn secondary">🎤 سجل ملاحظة صوتية</button>
-            <button id="reviewerWhisper" class="btn ghost hidden">📝 تفريغ التسجيل الآن</button>
+            <button id="reviewerWhisper" class="btn ghost hidden">🎯 تفريغ أدق</button>
             <audio id="reviewerAudio" class="hidden" controls></audio>
           </div>
           <div id="reviewerSpeechHint" class="small mut" style="margin-top:6px"></div>
           <textarea id="reviewerTranscript" class="field" rows="3" placeholder="النص المفرغ من الصوت — ويمكن تعديله يدويًا" style="margin-top:8px"></textarea>
-          <div class="small mut" style="margin-top:5px">لو التفريغ الحي لم يعمل، استخدم «تفريغ التسجيل الآن» لتحويل التسجيل نفسه إلى نص محليًا داخل المتصفح بدون API مدفوع.</div>
+          <div class="small mut" style="margin-top:5px">لو التفريغ الحي لم يعمل، استخدم «تفريغ أدق» لتحويل التسجيل نفسه إلى نص بموديل Whisper أكبر داخل المتصفح، بدون API مدفوع.</div>
           <div class="row" style="margin-top:10px">
             <button id="reviewerSaveFeedback" class="btn primary">حفظ الملاحظة والتالي</button>
             <button id="reviewerCancelFeedback" class="btn ghost">إلغاء</button>
@@ -143,7 +143,7 @@ function resetReviewerFeedback(){
   if(reviewRec&&reviewRec.state==="recording"){try{reviewRec.stop()}catch{}}
   if(reviewSpeech){reviewSpeechActive=false;try{reviewSpeech.stop()}catch{}}
   reviewSpeech=null;reviewSpeechFinal="";$("reviewerSpeechHint").textContent="";
-  $("reviewerWhisper").classList.add("hidden");$("reviewerWhisper").disabled=false;$("reviewerWhisper").textContent="📝 تفريغ التسجيل الآن";
+  $("reviewerWhisper").classList.add("hidden");$("reviewerWhisper").disabled=false;$("reviewerWhisper").textContent="🎯 تفريغ أدق";
   $("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";
 }
 function showReviewerFeedback(){
@@ -264,23 +264,60 @@ function startReviewerSpeech(){
 async function getWhisperTranscriber(){
   if(!whisperPipePromise){
     whisperPipePromise=(async()=>{
-      $("reviewerSpeechHint").textContent="جاري تحميل نموذج Whisper المحلي لأول مرة... قد يستغرق قليلًا حسب سرعة الإنترنت.";
+      $("reviewerSpeechHint").textContent="جاري تحميل نموذج Whisper أدق لأول مرة... الحجم أكبر لكنه يُحفظ في Cache بعد أول مرة.";
       const mod=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1");
       mod.env.allowLocalModels=false;
       mod.env.useBrowserCache=true;
-      const pipe=await mod.pipeline("automatic-speech-recognition","Xenova/whisper-tiny",{
-        progress_callback:p=>{
-          if(p?.status==="progress"&&Number.isFinite(p.progress)){
-            $("reviewerSpeechHint").textContent="جاري تحميل نموذج التفريغ: "+Math.round(p.progress)+"%";
-          }else if(p?.status==="ready"){
-            $("reviewerSpeechHint").textContent="تم تحميل نموذج التفريغ.";
-          }
+      const progress_callback=p=>{
+        if(p?.status==="progress"&&Number.isFinite(p.progress)){
+          $("reviewerSpeechHint").textContent="جاري تحميل نموذج التفريغ الدقيق: "+Math.round(p.progress)+"%";
+        }else if(p?.status==="ready"){
+          $("reviewerSpeechHint").textContent="تم تحميل نموذج التفريغ الدقيق.";
         }
-      });
-      return pipe;
+      };
+      try{
+        return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-small",{
+          dtype:"q8",
+          progress_callback
+        });
+      }catch(err){
+        console.warn("whisper-small failed, falling back to base",err);
+        $("reviewerSpeechHint").textContent="تعذر تحميل Whisper Small؛ جاري استخدام Whisper Base كبديل...";
+        return await mod.pipeline("automatic-speech-recognition","onnx-community/whisper-base",{
+          dtype:"q8",
+          progress_callback
+        });
+      }
     })().catch(err=>{whisperPipePromise=null;throw err});
   }
   return whisperPipePromise;
+}
+async function blobTo16kMono(blob){
+  const arr=await blob.arrayBuffer();
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  const ctx=new AudioCtx();
+  try{
+    const decoded=await ctx.decodeAudioData(arr.slice(0));
+    const channels=decoded.numberOfChannels;
+    const length=decoded.length;
+    const mono=new Float32Array(length);
+    for(let ch=0;ch<channels;ch++){
+      const data=decoded.getChannelData(ch);
+      for(let i=0;i<length;i++)mono[i]+=data[i]/channels;
+    }
+    if(decoded.sampleRate===16000)return mono;
+    const outLength=Math.max(1,Math.round(mono.length*16000/decoded.sampleRate));
+    const out=new Float32Array(outLength);
+    const ratio=decoded.sampleRate/16000;
+    for(let i=0;i<outLength;i++){
+      const pos=i*ratio,idx=Math.floor(pos),frac=pos-idx;
+      const a=mono[Math.min(idx,mono.length-1)],b=mono[Math.min(idx+1,mono.length-1)];
+      out[i]=a+(b-a)*frac;
+    }
+    return out;
+  }finally{
+    try{await ctx.close()}catch{}
+  }
 }
 $("reviewerWhisper").onclick=async()=>{
   if(!reviewVoiceBlob||whisperRunning)return;
@@ -288,23 +325,28 @@ $("reviewerWhisper").onclick=async()=>{
   try{
     const transcriber=await getWhisperTranscriber();
     $("reviewerSpeechHint").textContent="Whisper يحلل التسجيل الآن داخل المتصفح...";
-    const audioUrl=URL.createObjectURL(reviewVoiceBlob);
-    try{
-      const out=await transcriber(audioUrl,{language:"arabic",task:"transcribe",chunk_length_s:30,stride_length_s:5});
-      const textOut=(out?.text||"").trim();
-      if(textOut){
-        const old=$("reviewerTranscript").value.trim();
-        $("reviewerTranscript").value=(old?(old+" "):"")+textOut;
-        $("reviewerSpeechHint").textContent="✅ تم تفريغ التسجيل باستخدام Whisper المحلي.";
-      }else{
-        $("reviewerSpeechHint").textContent="Whisper لم يلتقط كلامًا واضحًا من التسجيل. جرّب تسجيلًا أقرب للميكروفون وبصوت أوضح.";
-      }
-    }finally{URL.revokeObjectURL(audioUrl)}
+    const audio16k=await blobTo16kMono(reviewVoiceBlob);
+    const out=await transcriber(audio16k,{
+      language:"arabic",
+      task:"transcribe",
+      chunk_length_s:30,
+      stride_length_s:5,
+      temperature:0,
+      num_beams:3,
+      no_repeat_ngram_size:3
+    });
+    const textOut=(out?.text||"").trim();
+    if(textOut){
+      $("reviewerTranscript").value=textOut;
+      $("reviewerSpeechHint").textContent="✅ تم التفريغ بالموديل الأدق. راجع النص وعدّله لو فيه كلمة غير صحيحة.";
+    }else{
+      $("reviewerSpeechHint").textContent="Whisper لم يلتقط كلامًا واضحًا من التسجيل. جرّب تسجيلًا أقرب للميكروفون وبصوت أوضح.";
+    }
   }catch(err){
     console.error("Whisper transcription failed",err);
     $("reviewerSpeechHint").textContent="⚠️ تعذر تشغيل Whisper المحلي في هذا المتصفح. التسجيل الصوتي محفوظ ويمكن إرسال الملاحظة بالصوت.";
   }finally{
-    whisperRunning=false;$("reviewerWhisper").disabled=false;$("reviewerWhisper").textContent="📝 إعادة تفريغ التسجيل";
+    whisperRunning=false;$("reviewerWhisper").disabled=false;$("reviewerWhisper").textContent="🎯 إعادة التفريغ بدقة أعلى";
   }
 };
 $("reviewerRecord").onclick=async()=>{
@@ -314,7 +356,12 @@ $("reviewerRecord").onclick=async()=>{
     reviewRec.stop();$("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";return;
   }
   try{
-    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    const st=await navigator.mediaDevices.getUserMedia({audio:{
+      channelCount:1,
+      echoCancellation:true,
+      noiseSuppression:true,
+      autoGainControl:true
+    }});
     reviewChunks=[];reviewVoiceBlob=null;$("reviewerWhisper").classList.add("hidden");
     reviewRec=new MediaRecorder(st);
     reviewRec.ondataavailable=e=>{if(e.data.size)reviewChunks.push(e.data)};
@@ -324,7 +371,7 @@ $("reviewerRecord").onclick=async()=>{
       $("reviewerWhisper").classList.remove("hidden");
       st.getTracks().forEach(t=>t.stop());
       reviewSpeechActive=false;try{reviewSpeech?.stop()}catch{}
-      if(!$("reviewerTranscript").value.trim())$("reviewerSpeechHint").textContent="تم حفظ التسجيل الصوتي. التفريغ الحي لم ينتج نصًا — اضغط «تفريغ التسجيل الآن» لاستخدام Whisper المحلي.";
+      if(!$("reviewerTranscript").value.trim())$("reviewerSpeechHint").textContent="تم حفظ التسجيل الصوتي. التفريغ الحي لم ينتج نصًا — اضغط «تفريغ أدق» لاستخدام Whisper الأكبر على التسجيل نفسه.";
     };
     reviewRec.start();$("reviewerRecord").textContent="■ إيقاف التسجيل";
     $("reviewerSpeechHint").textContent="جاري تشغيل التعرف على الكلام...";
