@@ -8,7 +8,7 @@
 <style>
 :root{--g:#173d2a;--g2:#245a3e;--bg:#f5f7f6;--card:#fff;--tx:#17231c;--mut:#6d7b73;--bd:#dfe7e2;--ok:#167247;--warn:#996500;--bad:#b53636}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--tx)}button,input,textarea,select{font:inherit}.hidden{display:none!important}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.card{background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:0 8px 24px #0000000b}.field{width:100%;padding:11px 13px;border:1px solid var(--bd);border-radius:11px;background:#fff}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer}.primary{background:var(--g);color:#fff}.secondary{background:#e8f2ec;color:var(--g)}.ghost{background:#fff;border:1px solid var(--bd)}.mut{color:var(--mut)}.small{font-size:12px}.auth{min-height:100vh;display:grid;place-items:center;padding:24px}.auth .card{width:min(450px,100%);padding:28px}.brand{width:54px;height:54px;border-radius:15px;background:var(--g);color:#fff;display:grid;place-items:center;font-weight:900}.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.side{background:var(--g);color:#fff;padding:18px;display:flex;flex-direction:column;gap:18px}.side .brand{background:#fff;color:var(--g)}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#dceae2;text-align:right;padding:11px;border-radius:10px}.nav button.active,.nav button:hover{background:#ffffff18;color:#fff}.who{margin-top:auto;border-top:1px solid #ffffff22;padding-top:12px;word-break:break-word}.main{padding:24px;min-width:0}.top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:18px}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.stat{padding:16px}.stat b{display:block;font-size:27px;margin-top:5px}.panel{padding:17px;margin-top:14px}.progress{height:9px;background:#e5ece8;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--g);width:0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:14px}.project{padding:16px}.toolbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}.thumb-card{overflow:hidden}.thumb{aspect-ratio:4/3;background:#e5ece8;display:grid;place-items:center;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}.pad{padding:12px}.badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:#edf1ef;color:#56635b;font-size:12px}.approved{background:#e5f5ec;color:#167247}.approved_note{background:#e9eefb;color:#36599f}.needs_changes,.open{background:#fff1d3;color:#996500}.rejected{background:#fde9e9;color:#b53636}.in_progress{background:#e9eefb;color:#36599f}.done{background:#e5f5ec;color:#167247}.empty{text-align:center;padding:38px;color:var(--mut)}.task{padding:14px;margin-bottom:10px}.settings{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-.reviewer-shell{max-width:960px;margin:0 auto}.reviewer-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.reviewer-progress{height:8px;background:#e5ece8;border-radius:999px;overflow:hidden;flex:1;min-width:180px}.reviewer-progress>div{height:100%;background:var(--g);width:0;transition:.25s}.tinder-card{overflow:hidden;border-radius:24px}.tinder-media{position:relative;background:#101411;min-height:62vh;display:grid;place-items:center;overflow:hidden;touch-action:pan-y}.tinder-media.loading img{opacity:.28}.tinder-media img{transition:opacity .14s ease}.reviewer-loader{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;background:#10141133;z-index:3;pointer-events:none}.reviewer-loader.hidden{display:none!important}.tinder-media img{display:block;max-width:100%;max-height:72vh;object-fit:contain;user-select:none;-webkit-user-drag:none}.tinder-overlay{position:absolute;top:18px;padding:9px 14px;border:3px solid;border-radius:12px;font-weight:900;font-size:24px;opacity:0;transform:rotate(-8deg);pointer-events:none}.tinder-overlay.approve{right:20px;color:#35c47b;border-color:#35c47b}.tinder-overlay.change{left:20px;color:#ff6b6b;border-color:#ff6b6b;transform:rotate(8deg)}.tinder-info{padding:16px 18px}.tinder-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.tinder-action{min-height:58px;font-size:18px;font-weight:800;border-radius:16px}.approve-action{background:#e5f5ec;color:#167247;border:1px solid #b9e3cd}.change-action{background:#fff0ef;color:#ad3434;border:1px solid #f1c2be}.reviewer-feedback{margin-top:14px;padding:16px;border:1px solid var(--bd);border-radius:16px;background:#fafcfb}.reviewer-nav{display:flex;justify-content:center;gap:8px;margin-top:12px}.reviewer-history{margin-top:14px;border-top:1px solid var(--bd);padding-top:14px}.reviewer-history-item{padding:12px;border:1px solid var(--bd);border-radius:12px;background:#fafcfb;margin-top:8px}.reviewer-history-item audio{width:100%;margin-top:8px}.reviewer-history-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.swipe-hint{text-align:center;color:var(--mut);font-size:12px;margin-top:9px}.reviewer-complete{text-align:center;padding:50px 20px}.reviewer-complete .check{width:74px;height:74px;border-radius:50%;margin:0 auto 14px;background:#e5f5ec;color:#167247;display:grid;place-items:center;font-size:36px}.pulse-approve{animation:approveFlash .32s ease}.pulse-change{animation:changeFlash .32s ease}@keyframes approveFlash{50%{transform:translateX(24px) rotate(2deg);opacity:.7}}@keyframes changeFlash{50%{transform:translateX(-24px) rotate(-2deg);opacity:.7}}
+.reviewer-shell{max-width:960px;margin:0 auto}.reviewer-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.reviewer-progress{height:8px;background:#e5ece8;border-radius:999px;overflow:hidden;flex:1;min-width:180px}.reviewer-progress>div{height:100%;background:var(--g);width:0;transition:.25s}.tinder-card{overflow:hidden;border-radius:24px}.tinder-media{position:relative;background:#101411;min-height:62vh;display:grid;place-items:center;overflow:hidden;touch-action:pan-y}.tinder-media.annotating{cursor:crosshair;touch-action:none}.tinder-media.annotating img{outline:3px solid #ffd44a;outline-offset:-3px}.reviewer-pins{position:absolute;inset:0;pointer-events:none;z-index:4}.reviewer-pin{position:absolute;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#ffd44a;color:#1d261f;border:2px solid #fff;box-shadow:0 4px 12px #0008;font-weight:900;line-height:1}.reviewer-pin.saved{background:#fff;color:var(--g);border-color:#ffd44a}.annotation-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}.annotation-list{margin-top:8px}.annotation-item{padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:#fff;margin-top:6px}.annotation-mode-on{background:#fff4bf!important;color:#664f00!important;border:1px solid #e8c952!important}.tinder-media.loading img{opacity:.28}.tinder-media img{transition:opacity .14s ease}.reviewer-loader{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;background:#10141133;z-index:3;pointer-events:none}.reviewer-loader.hidden{display:none!important}.tinder-media img{display:block;max-width:100%;max-height:72vh;object-fit:contain;user-select:none;-webkit-user-drag:none}.tinder-overlay{position:absolute;top:18px;padding:9px 14px;border:3px solid;border-radius:12px;font-weight:900;font-size:24px;opacity:0;transform:rotate(-8deg);pointer-events:none}.tinder-overlay.approve{right:20px;color:#35c47b;border-color:#35c47b}.tinder-overlay.change{left:20px;color:#ff6b6b;border-color:#ff6b6b;transform:rotate(8deg)}.tinder-info{padding:16px 18px}.tinder-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.tinder-action{min-height:58px;font-size:18px;font-weight:800;border-radius:16px}.approve-action{background:#e5f5ec;color:#167247;border:1px solid #b9e3cd}.change-action{background:#fff0ef;color:#ad3434;border:1px solid #f1c2be}.reviewer-feedback{margin-top:14px;padding:16px;border:1px solid var(--bd);border-radius:16px;background:#fafcfb}.reviewer-nav{display:flex;justify-content:center;gap:8px;margin-top:12px}.reviewer-history{margin-top:14px;border-top:1px solid var(--bd);padding-top:14px}.reviewer-history-item{padding:12px;border:1px solid var(--bd);border-radius:12px;background:#fafcfb;margin-top:8px}.reviewer-history-item audio{width:100%;margin-top:8px}.reviewer-history-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.swipe-hint{text-align:center;color:var(--mut);font-size:12px;margin-top:9px}.reviewer-complete{text-align:center;padding:50px 20px}.reviewer-complete .check{width:74px;height:74px;border-radius:50%;margin:0 auto 14px;background:#e5f5ec;color:#167247;display:grid;place-items:center;font-size:36px}.pulse-approve{animation:approveFlash .32s ease}.pulse-change{animation:changeFlash .32s ease}@keyframes approveFlash{50%{transform:translateX(24px) rotate(2deg);opacity:.7}}@keyframes changeFlash{50%{transform:translateX(-24px) rotate(-2deg);opacity:.7}}
 dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0 25px 70px #0005}dialog::backdrop{background:#061009b5}.review{display:grid;grid-template-columns:1.2fr .8fr;max-height:94vh}.visual{background:#101411;display:grid;grid-template-rows:1fr auto;min-width:0}.stagewrap{overflow:auto;padding:14px;display:grid;place-items:center;min-height:570px}.stage{position:relative;display:inline-block;line-height:0;max-width:100%}.stage img{display:block;max-width:100%;max-height:76vh;object-fit:contain}.pins{position:absolute;inset:0;pointer-events:none}.pin{pointer-events:auto;position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:2px solid #fff;background:#ffd44a;display:grid;place-items:center;font-weight:800;line-height:1}.versions{display:flex;gap:7px;padding:10px;overflow:auto;background:#151b17}.versions button{border:1px solid #ffffff33;background:#ffffff0f;color:#fff;border-radius:9px;padding:7px 10px;white-space:nowrap}.versions button.active{background:#fff;color:var(--g)}.reviewpanel{padding:18px;overflow:auto;background:#fff}.box{border:1px solid var(--bd);border-radius:12px;padding:12px;margin:10px 0}.statusgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.status.selected{outline:2px solid var(--g)}.annrow,.feedrow{padding:7px 0;border-bottom:1px solid #edf1ef}.toast{position:fixed;left:18px;bottom:18px;background:#1e2d24;color:#fff;padding:11px 14px;border-radius:10px;z-index:9999;opacity:0;transform:translateY(8px);transition:.2s}.toast.show{opacity:1;transform:none}.loading{position:fixed;inset:0;background:#f5f7f6cc;display:grid;place-items:center;z-index:9000}.spinner{width:34px;height:34px;border:3px solid #d8e4dd;border-top-color:var(--g);border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
 @media(max-width:900px){.app{grid-template-columns:1fr}.side{position:sticky;top:0;z-index:30;flex-direction:row;height:auto;overflow:auto;padding:10px}.side>.brand,.who{display:none}.nav{display:flex}.nav button{white-space:nowrap}.main{padding:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.settings{grid-template-columns:1fr}.tinder-media{min-height:52vh}.tinder-actions{grid-template-columns:1fr 1fr}.review{grid-template-columns:1fr}.stagewrap{min-height:320px}.reviewpanel{max-height:54vh}.top{flex-direction:column}}
 </style>
@@ -32,6 +32,7 @@ dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0
     <div id="reviewerCard" class="card tinder-card">
       <div id="reviewerMedia" class="tinder-media">
         <img id="reviewerImage" alt="" decoding="async" fetchpriority="high">
+        <div id="reviewerPins" class="reviewer-pins"></div>
         <div id="reviewerLoader" class="reviewer-loader hidden">جاري تحميل الصورة...</div>
         <div id="approveOverlay" class="tinder-overlay approve">تمام ✓</div>
         <div id="changeOverlay" class="tinder-overlay change">تعديل ✕</div>
@@ -48,6 +49,11 @@ dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0
         <div class="swipe-hint">اسحب يمين للموافقة • اسحب شمال لإضافة ملاحظة</div>
         <div id="reviewerFeedback" class="reviewer-feedback hidden">
           <b>إيه اللي محتاج يتعدل؟</b>
+          <div class="annotation-toolbar">
+            <button id="reviewerAnnotate" class="btn ghost">📍 حدد مكان التعديل</button>
+            <span id="reviewerAnnotationHint" class="small mut">اضغط الزر ثم اضغط على الجزء المطلوب تعديله في الصورة.</span>
+          </div>
+          <div id="reviewerAnnotationList" class="annotation-list"></div>
           <textarea id="reviewerWritten" class="field" rows="4" placeholder="اكتب ملاحظتك هنا..." style="margin-top:9px"></textarea>
           <div class="row" style="margin-top:9px">
             <button id="reviewerRecord" class="btn secondary">🎤 سجل ملاحظة صوتية</button>
@@ -84,12 +90,13 @@ const $=id=>document.getElementById(id),IMAGES="catalog-images",VOICE="voice-fee
 let user=null,projects=[],roles=new Map(),project=null,images=[],current=null,vers=[],selV=1,feeds=[],anns=[],curStatus="pending",gFilter="all",tFilter="all",rec=null,chunks=[],voiceBlob=null,speech=null;
 let reviewerIndex=0,reviewerProjectId=null,reviewerComplete=false,reviewRec=null,reviewChunks=[],reviewVoiceBlob=null,reviewSpeech=null,reviewSpeechActive=false,reviewSpeechFinal="",initialViewSet=false;
 let reviewerRenderSeq=0,reviewerBusy=false,whisperPipePromise=null,whisperRunning=false;
-const signedCache=new Map(),currentVersionCache=new Map(),reviewerFeedbackCache=new Map();
+let reviewerAnnotationMode=false,reviewerAnnotations=[];
+const signedCache=new Map(),currentVersionCache=new Map(),reviewerFeedbackCache=new Map(),reviewerAnnotationCache=new Map();
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])),toast=m=>{const e=$("toast");e.textContent=m;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)},busy=x=>$("loading").classList.toggle("hidden",!x),safe=n=>String(n||"file").replace(/[^a-zA-Z0-9._-]+/g,"-"),role=p=>!p||!user?null:p.owner_id===user.id?"owner":(roles.get(p.id)||"reviewer"),admin=()=>["owner","admin"].includes(role(project)),roleName=r=>({owner:"مالك",admin:"Admin",reviewer:"Reviewer"}[r]||r||""),badge=s=>'<span class="badge '+(s||"pending")+'">'+(SL[s||"pending"]||s)+'</span>',ebadge=s=>'<span class="badge '+(s||"open")+'">'+(EL[s||"open"]||s)+'</span>';
 async function init(){const {data:{session}}=await sb.auth.getSession();session?(user=session.user,await showApp()):showAuth()}function showAuth(){$("auth").classList.remove("hidden");$("app").classList.add("hidden")}async function showApp(){$("auth").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent=user.email||"";$("uid").textContent="User ID: "+user.id;$("settingsUid").textContent=user.id;await loadProjects()}
 $("login").onclick=async()=>{busy(1);const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("pass").value});busy(0);if(error)return toast(error.message);user=data.user;showApp()};$("signup").onclick=async()=>{busy(1);const {data,error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("pass").value});busy(0);if(error)return toast(error.message);data.session?(user=data.user,showApp()):toast("تم إنشاء الحساب. راجع البريد لتأكيده إن كان التأكيد مفعّلًا.")};$("logout").onclick=async()=>{await sb.auth.signOut();location.reload()};
 async function loadProjects(){busy(1);const [p,m]=await Promise.all([sb.from("projects").select("*").order("created_at",{ascending:false}),sb.from("project_members").select("project_id,user_id,role").eq("user_id",user.id)]);busy(0);if(p.error)return toast(p.error.message);projects=p.data||[];roles=new Map((m.data||[]).map(x=>[x.project_id,x.role]));project=(project&&projects.find(x=>x.id===project.id))||projects[0]||null;renderSelect();renderProjects();project?await loadImages():(images=[],renderAll())}
-function renderSelect(){const s=$("projectSelect");s.innerHTML="";if(!projects.length){s.disabled=true;s.innerHTML='<option>لا توجد مشاريع</option>'}else{s.disabled=false;projects.forEach(p=>s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>');if(project)s.value=project.id}}$("projectSelect").onchange=async e=>{project=projects.find(p=>p.id===e.target.value)||null;reviewerIndex=0;reviewerProjectId=null;reviewerComplete=false;currentVersionCache.clear();reviewerFeedbackCache.clear();project?await loadImages():renderAll()};
+function renderSelect(){const s=$("projectSelect");s.innerHTML="";if(!projects.length){s.disabled=true;s.innerHTML='<option>لا توجد مشاريع</option>'}else{s.disabled=false;projects.forEach(p=>s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>');if(project)s.value=project.id}}$("projectSelect").onchange=async e=>{project=projects.find(p=>p.id===e.target.value)||null;reviewerIndex=0;reviewerProjectId=null;reviewerComplete=false;currentVersionCache.clear();reviewerFeedbackCache.clear();reviewerAnnotationCache.clear();project?await loadImages():renderAll()};
 async function createProject(){const name=prompt("اسم المشروع؟");if(!name?.trim())return;busy(1);const {data,error}=await sb.from("projects").insert({name:name.trim(),owner_id:user.id}).select("*").single();busy(0);if(error)return toast(error.message);project=data;toast("تم إنشاء المشروع");loadProjects()}$("newProject").onclick=createProject;$("newProject2").onclick=createProject;
 async function loadImages(){
   busy(1);
@@ -143,6 +150,8 @@ $("saveInst").onclick=async()=>{if(!project||!admin())return;const v=$("instruct
 function switchView(v){const m={dash:"dashView",projects:"projectsView",gallery:"galleryView",reviewer:"reviewerView",tasks:"tasksView",settings:"settingsView"};Object.values(m).forEach(x=>$(x).classList.add("hidden"));$(m[v]).classList.remove("hidden");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===v));$("pageTitle").textContent={dash:"لوحة التحكم",projects:"المشاريع",gallery:"صور الكتالوج",reviewer:"مراجعة الصور",tasks:"مهام التعديل",settings:"إعدادات المشروع"}[v];if(v==="reviewer")renderReviewer()}document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>switchView(b.dataset.view));
 function reviewQueue(){return [...images].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)||String(a.created_at||"").localeCompare(String(b.created_at||"")))}
 function resetReviewerFeedback(){
+  reviewerAnnotationMode=false;$("reviewerMedia").classList.remove("annotating");$("reviewerAnnotate").classList.remove("annotation-mode-on");$("reviewerAnnotate").textContent="📍 حدد مكان التعديل";reviewerAnnotations=[];
+  $("reviewerPins").innerHTML="";$("reviewerAnnotationList").innerHTML="";
   $("reviewerFeedback").classList.add("hidden");$("reviewerWritten").value="";$("reviewerTranscript").value="";$("reviewerAudio").classList.add("hidden");$("reviewerAudio").removeAttribute("src");reviewVoiceBlob=null;
   if(reviewRec&&reviewRec.state==="recording"){try{reviewRec.stop()}catch{}}
   if(reviewSpeech){reviewSpeechActive=false;try{reviewSpeech.stop()}catch{}}
@@ -151,7 +160,7 @@ function resetReviewerFeedback(){
   $("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";
 }
 function showReviewerFeedback(){
-  $("reviewerFeedback").classList.remove("hidden");$("reviewerWritten").focus();
+  $("reviewerFeedback").classList.remove("hidden");if(!reviewerAnnotationMode)$("reviewerWritten").focus();
 }
 function nextReviewer(){
   const q=reviewQueue();if(!q.length)return;
@@ -195,6 +204,48 @@ async function loadReviewerHistory(img,seq){
     box.appendChild(item);
   });
 }
+function reviewerAnnotationKey(img){return img.id+"|"+img.current_version}
+function drawReviewerPins(){
+  const pinBox=$("reviewerPins"),media=$("reviewerMedia"),img=$("reviewerImage");
+  pinBox.innerHTML="";
+  if(!img.src||!img.complete||!img.naturalWidth)return;
+  const mr=media.getBoundingClientRect(),ir=img.getBoundingClientRect();
+  reviewerAnnotations.forEach((a,i)=>{
+    const p=document.createElement("div");p.className="reviewer-pin"+(a.temp?"":" saved");p.textContent=i+1;p.title=a.note||"";
+    p.style.left=(ir.left-mr.left+Number(a.x)*ir.width)+"px";p.style.top=(ir.top-mr.top+Number(a.y)*ir.height)+"px";
+    pinBox.appendChild(p);
+  });
+}
+function renderReviewerAnnotationList(){
+  const box=$("reviewerAnnotationList");box.innerHTML="";
+  if(!reviewerAnnotations.length){box.innerHTML='<div class="small mut">لا توجد تحديدات على الصورة.</div>';return}
+  reviewerAnnotations.forEach((a,i)=>{
+    const row=document.createElement("div");row.className="annotation-item";
+    row.innerHTML='<div class="row" style="justify-content:space-between"><span><b>📍 '+(i+1)+'</b> '+esc(a.note||"بدون وصف")+'</span>'+(a.temp?'<button class="btn ghost small">حذف</button>':'<span class="small mut">محفوظ</span>')+'</div>';
+    const del=row.querySelector("button");if(del)del.onclick=()=>{reviewerAnnotations.splice(i,1);drawReviewerPins();renderReviewerAnnotationList()};
+    box.appendChild(row);
+  });
+}
+async function loadReviewerAnnotations(img,seq){
+  const key=reviewerAnnotationKey(img);
+  let list=reviewerAnnotationCache.get(key);
+  if(!list){
+    const r=await sb.from("annotations").select("id,image_id,version_number,x,y,note,created_at").eq("image_id",img.id).eq("version_number",img.current_version).order("created_at");
+    if(seq!==reviewerRenderSeq)return;
+    if(r.error){reviewerAnnotations=[];renderReviewerAnnotationList();return}
+    list=r.data||[];reviewerAnnotationCache.set(key,list);
+  }
+  if(seq!==reviewerRenderSeq)return;
+  reviewerAnnotations=list.map(x=>({...x,temp:false}));
+  renderReviewerAnnotationList();requestAnimationFrame(drawReviewerPins);
+}
+function setReviewerAnnotationMode(on){
+  reviewerAnnotationMode=!!on;
+  $("reviewerMedia").classList.toggle("annotating",reviewerAnnotationMode);
+  $("reviewerAnnotate").classList.toggle("annotation-mode-on",reviewerAnnotationMode);
+  $("reviewerAnnotate").textContent=reviewerAnnotationMode?"✓ اضغط على الصورة الآن":"📍 حدد مكان التعديل";
+  $("reviewerAnnotationHint").textContent=reviewerAnnotationMode?"اضغط مباشرة على الجزء المطلوب تعديله.":"اضغط الزر ثم اضغط على الجزء المطلوب تعديله في الصورة.";
+}
 async function renderReviewer(){
   const seq=++reviewerRenderSeq,q=reviewQueue(),activeProjectId=project?.id||null;
   if(!project||!q.length){$("reviewerCard").classList.add("hidden");$("reviewerDone").classList.add("hidden");$("reviewerEmpty").classList.remove("hidden");$("reviewerCounter").textContent="0 / 0";$("reviewerProgressBar").style.width="0%";return}
@@ -205,7 +256,7 @@ async function renderReviewer(){
   reviewerIndex=Math.max(0,Math.min(reviewerIndex,q.length-1));
   const img=q[reviewerIndex],media=$("reviewerMedia"),loader=$("reviewerLoader"),target=$("reviewerImage");
   $("reviewerImageName").textContent=img.name;$("reviewerVersion").textContent="V"+img.current_version+" • "+project.name;$("reviewerStatus").innerHTML=badge(img.status);$("reviewerCounter").textContent=(reviewerIndex+1)+" / "+q.length;$("reviewerProgressBar").style.width=Math.round(((reviewerIndex+1)/q.length)*100)+"%";
-  loadReviewerHistory(img,seq);
+  loadReviewerHistory(img,seq);loadReviewerAnnotations(img,seq);
   media.classList.add("loading");loader.classList.remove("hidden");
   const v=await currentVer(img);
   if(seq!==reviewerRenderSeq||project?.id!==activeProjectId)return;
@@ -220,14 +271,15 @@ async function renderReviewer(){
     await new Promise(resolve=>{if(preload.complete)return resolve();preload.onload=resolve;preload.onerror=resolve});
   }
   if(seq!==reviewerRenderSeq||project?.id!==activeProjectId)return;
-  target.src=u;media.classList.remove("loading");loader.classList.add("hidden");
+  target.src=u;media.classList.remove("loading");loader.classList.add("hidden");requestAnimationFrame(drawReviewerPins);
   prefetchReviewerNeighbors();
 }
 async function reviewerDecision(status,withFeedback=false){
   if(reviewerBusy)return;
   const q=reviewQueue(),img=q[reviewerIndex];if(!img)return;
   const written=$("reviewerWritten").value.trim(),transcript=$("reviewerTranscript").value.trim();
-  if(withFeedback&&!written&&!transcript&&!reviewVoiceBlob)return toast("اكتب ملاحظة أو سجل ملاحظة صوتية أولًا");
+  const tempAnnotations=reviewerAnnotations.filter(a=>a.temp);
+  if(withFeedback&&!written&&!transcript&&!reviewVoiceBlob&&!tempAnnotations.length)return toast("اكتب ملاحظة أو سجل صوت أو حدد مكان التعديل على الصورة أولًا");
   reviewerBusy=true;busy(1);let voicePath=null;
   if(reviewVoiceBlob){
     voicePath=project.id+"/"+img.id+"/v"+img.current_version+"-"+Date.now()+".webm";
@@ -240,6 +292,16 @@ async function reviewerDecision(status,withFeedback=false){
     if(voicePath){try{await sb.storage.from(VOICE).remove([voicePath])}catch{}}
     reviewerBusy=false;busy(0);return toast("فشل تسجيل الملاحظة: "+f.error.message)
   }
+  if(tempAnnotations.length){
+    const annRows=tempAnnotations.map(a=>({image_id:img.id,version_number:img.current_version,x:Number(a.x),y:Number(a.y),note:a.note||null,created_by:user.id}));
+    const annInsert=await sb.from("annotations").insert(annRows).select("id,image_id,version_number,x,y,note,created_at");
+    if(annInsert.error){
+      try{await sb.from("feedback").delete().eq("id",f.data.id)}catch{}
+      if(voicePath){try{await sb.storage.from(VOICE).remove([voicePath])}catch{}}
+      reviewerBusy=false;busy(0);return toast("فشل حفظ تحديدات الصورة: "+annInsert.error.message)
+    }
+    reviewerAnnotationCache.delete(reviewerAnnotationKey(img));
+  }
   reviewerFeedbackCache.delete(img.id);
   if(voicePath){
     const check=await sb.storage.from(VOICE).createSignedUrl(voicePath,60);
@@ -250,8 +312,9 @@ async function reviewerDecision(status,withFeedback=false){
   const editState=status==="approved"?"done":"open",u=await sb.from("catalog_images").update({status,editing_state:editState}).eq("id",img.id);busy(0);if(u.error){reviewerBusy=false;return toast(u.error.message)}
   img.status=status;img.editing_state=editState;reviewerBusy=false;toast(voicePath?"تم حفظ الملاحظة والتسجيل الصوتي ✓":(status==="approved"?"تم اعتماد الصورة ✓":"تم حفظ الملاحظة"));nextReviewer();renderDash();renderGallery();renderTasks();
 }
-$("reviewerApprove").onclick=async()=>{const card=$("reviewerCard");card.classList.add("pulse-approve");setTimeout(()=>card.classList.remove("pulse-approve"),340);await reviewerDecision("approved",false)};
+$("reviewerApprove").onclick=async()=>{if(reviewerAnnotations.some(a=>a.temp))return toast("عندك تحديدات غير محفوظة. احفظ الملاحظة أو احذف التحديدات أولًا.");const card=$("reviewerCard");card.classList.add("pulse-approve");setTimeout(()=>card.classList.remove("pulse-approve"),340);await reviewerDecision("approved",false)};
 $("reviewerNeedsChanges").onclick=()=>showReviewerFeedback();
+$("reviewerAnnotate").onclick=()=>{showReviewerFeedback();setReviewerAnnotationMode(!reviewerAnnotationMode)};
 $("reviewerSaveFeedback").onclick=()=>reviewerDecision("needs_changes",true);
 $("reviewerCancelFeedback").onclick=()=>resetReviewerFeedback();
 $("reviewerPrev").onclick=()=>{if(reviewerBusy)return;const q=reviewQueue();if(!q.length)return;reviewerRenderSeq++;reviewerComplete=false;reviewerIndex=(reviewerIndex-1+q.length)%q.length;resetReviewerFeedback();renderReviewer()};
@@ -429,11 +492,25 @@ $("reviewerRecord").onclick=async()=>{
     toast("تعذر الوصول إلى الميكروفون");
   }
 };
-let swipeX=null;
-$("reviewerMedia").addEventListener("pointerdown",e=>{if(reviewerBusy)return;swipeX=e.clientX});
-$("reviewerMedia").addEventListener("pointermove",e=>{if(swipeX===null)return;const dx=e.clientX-swipeX;$("approveOverlay").style.opacity=dx>35?Math.min(1,dx/140):0;$("changeOverlay").style.opacity=dx<-35?Math.min(1,-dx/140):0});
-$("reviewerMedia").addEventListener("pointerup",async e=>{if(swipeX===null)return;const dx=e.clientX-swipeX;swipeX=null;$("approveOverlay").style.opacity=0;$("changeOverlay").style.opacity=0;if(dx>90)await reviewerDecision("approved",false);else if(dx<-90)showReviewerFeedback()});
-$("reviewerMedia").addEventListener("pointercancel",()=>{swipeX=null;$("approveOverlay").style.opacity=0;$("changeOverlay").style.opacity=0});
+let swipeX=null,swipeY=null;
+$("reviewerMedia").addEventListener("pointerdown",e=>{if(reviewerBusy)return;swipeX=e.clientX;swipeY=e.clientY});
+$("reviewerMedia").addEventListener("pointermove",e=>{if(swipeX===null||reviewerAnnotationMode)return;const dx=e.clientX-swipeX;$("approveOverlay").style.opacity=dx>35?Math.min(1,dx/140):0;$("changeOverlay").style.opacity=dx<-35?Math.min(1,-dx/140):0});
+$("reviewerMedia").addEventListener("pointerup",async e=>{
+  if(swipeX===null)return;
+  const sx=swipeX,sy=swipeY,dx=e.clientX-sx,dy=e.clientY-sy;swipeX=null;swipeY=null;$("approveOverlay").style.opacity=0;$("changeOverlay").style.opacity=0;
+  if(reviewerAnnotationMode){
+    if(Math.abs(dx)>12||Math.abs(dy)>12)return;
+    const img=$("reviewerImage"),ir=img.getBoundingClientRect();
+    if(e.clientX<ir.left||e.clientX>ir.right||e.clientY<ir.top||e.clientY>ir.bottom)return toast("اضغط داخل الصورة نفسها");
+    const note=prompt("اكتب التعديل المطلوب في الجزء المحدد:");
+    if(note===null)return;
+    reviewerAnnotations.push({x:(e.clientX-ir.left)/ir.width,y:(e.clientY-ir.top)/ir.height,note:note.trim()||"تعديل في الجزء المحدد",temp:true});
+    drawReviewerPins();renderReviewerAnnotationList();showReviewerFeedback();return;
+  }
+  if(dx>90)await reviewerDecision("approved",false);else if(dx<-90)showReviewerFeedback();
+});
+$("reviewerMedia").addEventListener("pointercancel",()=>{swipeX=null;swipeY=null;$("approveOverlay").style.opacity=0;$("changeOverlay").style.opacity=0});
+window.addEventListener("resize",()=>requestAnimationFrame(drawReviewerPins));
 
 async function openReview(i){current=i;selV=i.current_version;curStatus=i.status||"pending";voiceBlob=null;$("rName").textContent=i.name;$("rInstructions").textContent=project?.instructions?.trim()||"لا توجد تعليمات.";$("written").value="";$("transcript").value="";$("prompt").value="";$("audio").classList.add("hidden");$("versionBox").classList.toggle("hidden",!admin());$("speechHint").textContent=(window.SpeechRecognition||window.webkitSpeechRecognition)?"المتصفح يدعم التفريغ العربي أثناء التسجيل.":"التفريغ التلقائي غير مدعوم هنا؛ اكتب الـTranscript يدويًا.";busy(1);const [v,f]=await Promise.all([sb.from("image_versions").select("*").eq("image_id",i.id).order("version_number",{ascending:false}),sb.from("feedback").select("*").eq("image_id",i.id).order("created_at",{ascending:false})]);busy(0);if(v.error)return toast(v.error.message);vers=v.data||[];feeds=f.data||[];renderVers();await loadVersion();const dlg=$("reviewDialog");if(typeof dlg.showModal==="function"){if(!dlg.open)dlg.showModal()}else{dlg.setAttribute("open","")}}
 function renderVers(){const b=$("versions");b.innerHTML="";vers.forEach(v=>{const x=document.createElement("button");x.textContent="V"+v.version_number;x.classList.toggle("active",Number(v.version_number)===Number(selV));x.onclick=async()=>{selV=v.version_number;renderVers();await loadVersion()};b.appendChild(x)})}
