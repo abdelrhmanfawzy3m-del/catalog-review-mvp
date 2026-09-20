@@ -55,6 +55,7 @@ dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0
           </div>
           <div id="reviewerSpeechHint" class="small mut" style="margin-top:6px"></div>
           <textarea id="reviewerTranscript" class="field" rows="3" placeholder="النص المفرغ من الصوت — ويمكن تعديله يدويًا" style="margin-top:8px"></textarea>
+          <div class="small mut" style="margin-top:5px">لو التفريغ التلقائي لم يعمل، التسجيل الصوتي يظل محفوظًا ويمكن إرسال الملاحظة بالصوت فقط.</div>
           <div class="row" style="margin-top:10px">
             <button id="reviewerSaveFeedback" class="btn primary">حفظ الملاحظة والتالي</button>
             <button id="reviewerCancelFeedback" class="btn ghost">إلغاء</button>
@@ -76,7 +77,7 @@ dialog{border:0;padding:0;border-radius:18px;width:min(1180px,97vw);box-shadow:0
 const URL_="https://tdcahqjkidmhmqjaajwq.supabase.co",KEY="sb_publishable_GLO2R3wOkbOQkuY-CNcdsA_tdsoo-kJ",sb=supabase.createClient(URL_,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"catalog-review-auth"}});
 const $=id=>document.getElementById(id),IMAGES="catalog-images",VOICE="voice-feedback",SL={pending:"قيد المراجعة",approved:"مقبول",approved_note:"مقبول بملاحظة",needs_changes:"يحتاج تعديل",rejected:"مرفوض"},EL={open:"مفتوحة",in_progress:"قيد التنفيذ",done:"منجزة"};
 let user=null,projects=[],roles=new Map(),project=null,images=[],current=null,vers=[],selV=1,feeds=[],anns=[],curStatus="pending",gFilter="all",tFilter="all",rec=null,chunks=[],voiceBlob=null,speech=null;
-let reviewerIndex=0,reviewerProjectId=null,reviewerComplete=false,reviewRec=null,reviewChunks=[],reviewVoiceBlob=null,reviewSpeech=null,initialViewSet=false;
+let reviewerIndex=0,reviewerProjectId=null,reviewerComplete=false,reviewRec=null,reviewChunks=[],reviewVoiceBlob=null,reviewSpeech=null,reviewSpeechActive=false,reviewSpeechFinal="",initialViewSet=false;
 let reviewerRenderSeq=0,reviewerBusy=false;
 const signedCache=new Map(),currentVersionCache=new Map();
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])),toast=m=>{const e=$("toast");e.textContent=m;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)},busy=x=>$("loading").classList.toggle("hidden",!x),safe=n=>String(n||"file").replace(/[^a-zA-Z0-9._-]+/g,"-"),role=p=>!p||!user?null:p.owner_id===user.id?"owner":(roles.get(p.id)||"reviewer"),admin=()=>["owner","admin"].includes(role(project)),roleName=r=>({owner:"مالك",admin:"Admin",reviewer:"Reviewer"}[r]||r||""),badge=s=>'<span class="badge '+(s||"pending")+'">'+(SL[s||"pending"]||s)+'</span>',ebadge=s=>'<span class="badge '+(s||"open")+'">'+(EL[s||"open"]||s)+'</span>';
@@ -139,7 +140,8 @@ function reviewQueue(){return [...images].sort((a,b)=>(a.sort_order||0)-(b.sort_
 function resetReviewerFeedback(){
   $("reviewerFeedback").classList.add("hidden");$("reviewerWritten").value="";$("reviewerTranscript").value="";$("reviewerAudio").classList.add("hidden");$("reviewerAudio").removeAttribute("src");reviewVoiceBlob=null;
   if(reviewRec&&reviewRec.state==="recording"){try{reviewRec.stop()}catch{}}
-  if(reviewSpeech){try{reviewSpeech.stop()}catch{}}
+  if(reviewSpeech){reviewSpeechActive=false;try{reviewSpeech.stop()}catch{}}
+  reviewSpeech=null;reviewSpeechFinal="";$("reviewerSpeechHint").textContent="";
   $("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";
 }
 function showReviewerFeedback(){
@@ -205,12 +207,83 @@ $("reviewerCancelFeedback").onclick=()=>resetReviewerFeedback();
 $("reviewerPrev").onclick=()=>{if(reviewerBusy)return;const q=reviewQueue();if(!q.length)return;reviewerRenderSeq++;reviewerComplete=false;reviewerIndex=(reviewerIndex-1+q.length)%q.length;resetReviewerFeedback();renderReviewer()};
 $("reviewerSkip").onclick=()=>{if(reviewerBusy)return;const q=reviewQueue();if(!q.length)return;reviewerRenderSeq++;reviewerComplete=false;reviewerIndex=(reviewerIndex+1)%q.length;resetReviewerFeedback();renderReviewer()};
 $("reviewerRestart").onclick=()=>{reviewerComplete=false;reviewerIndex=0;resetReviewerFeedback();renderReviewer()};
+function speechErrorMessage(code){
+  const map={
+    "not-allowed":"المتصفح لم يسمح بخدمة تحويل الصوت إلى نص.",
+    "service-not-allowed":"خدمة تحويل الصوت إلى نص غير متاحة في هذا المتصفح.",
+    "network":"تعذر الوصول لخدمة التعرف على الصوت بسبب الشبكة.",
+    "no-speech":"لم يتم التقاط كلام واضح. تكلم أقرب للميكروفون.",
+    "audio-capture":"تعذر التقاط صوت من الميكروفون.",
+    "aborted":"تم إيقاف التفريغ."
+  };
+  return map[code]||("تعذر التفريغ التلقائي: "+code);
+}
+function startReviewerSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){$("reviewerSpeechHint").textContent="التفريغ التلقائي غير مدعوم في هذا المتصفح. التسجيل الصوتي سيظل محفوظًا ويمكنك كتابة الملاحظة يدويًا.";return}
+  try{
+    reviewSpeech=new SR();reviewSpeech.lang="ar-EG";reviewSpeech.continuous=true;reviewSpeech.interimResults=true;reviewSpeech.maxAlternatives=1;
+    reviewSpeechFinal=$("reviewerTranscript").value.trim();
+    reviewSpeech.onstart=()=>{reviewSpeechActive=true;$("reviewerSpeechHint").textContent="🎙️ يستمع الآن... ابدأ الكلام."};
+    reviewSpeech.onspeechstart=()=>{$("reviewerSpeechHint").textContent="🟢 تم التقاط الصوت — جاري تحويل الكلام إلى نص..."};
+    reviewSpeech.onresult=ev=>{
+      let interim="";
+      for(let i=ev.resultIndex;i<ev.results.length;i++){
+        const t=(ev.results[i][0]?.transcript||"").trim();
+        if(!t)continue;
+        if(ev.results[i].isFinal) reviewSpeechFinal+=(reviewSpeechFinal?" ":"")+t;
+        else interim+=(interim?" ":"")+t;
+      }
+      $("reviewerTranscript").value=(reviewSpeechFinal+(interim?" "+interim:"")).trim();
+      $("reviewerSpeechHint").textContent=$("reviewerTranscript").value?"✅ التفريغ يعمل — كمل كلامك.":"🎙️ يستمع الآن...";
+    };
+    reviewSpeech.onerror=ev=>{
+      const msg=speechErrorMessage(ev.error);
+      $("reviewerSpeechHint").textContent="⚠️ "+msg+" التسجيل الصوتي نفسه مستمر.";
+      if(["not-allowed","service-not-allowed","audio-capture"].includes(ev.error)) reviewSpeechActive=false;
+    };
+    reviewSpeech.onend=()=>{
+      reviewSpeechActive=false;
+      if(reviewRec&&reviewRec.state==="recording"){
+        setTimeout(()=>{
+          if(reviewRec&&reviewRec.state==="recording"&&!reviewSpeechActive){
+            try{reviewSpeech.start()}catch{}
+          }
+        },350);
+      }else if($("reviewerTranscript").value.trim()){
+        $("reviewerSpeechHint").textContent="✅ تم حفظ النص المفرغ ويمكنك تعديله قبل الإرسال.";
+      }
+    };
+    reviewSpeech.start();
+  }catch(err){
+    $("reviewerSpeechHint").textContent="⚠️ تعذر بدء التفريغ التلقائي. التسجيل الصوتي سيظل محفوظًا ويمكن كتابة الملاحظة يدويًا.";
+  }
+}
 $("reviewerRecord").onclick=async()=>{
-  if(reviewRec&&reviewRec.state==="recording"){reviewRec.stop();$("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";return}
-  try{const st=await navigator.mediaDevices.getUserMedia({audio:true});reviewChunks=[];reviewRec=new MediaRecorder(st);reviewRec.ondataavailable=e=>{if(e.data.size)reviewChunks.push(e.data)};reviewRec.onstop=()=>{reviewVoiceBlob=new Blob(reviewChunks,{type:reviewRec.mimeType||"audio/webm"});$("reviewerAudio").src=URL.createObjectURL(reviewVoiceBlob);$("reviewerAudio").classList.remove("hidden");st.getTracks().forEach(t=>t.stop());try{reviewSpeech?.stop()}catch{}};reviewRec.start();$("reviewerRecord").textContent="■ إيقاف التسجيل";
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;$("reviewerSpeechHint").textContent=SR?"جاري محاولة تفريغ الصوت بالعربي تلقائيًا.":"التفريغ التلقائي غير مدعوم في هذا المتصفح — التسجيل الصوتي سيُحفظ ويمكن كتابة النص يدويًا.";
-  if(SR){reviewSpeech=new SR();reviewSpeech.lang="ar-EG";reviewSpeech.continuous=true;reviewSpeech.interimResults=true;let fin=$("reviewerTranscript").value.trim();reviewSpeech.onresult=ev=>{let inter="";for(let i=ev.resultIndex;i<ev.results.length;i++){const t=ev.results[i][0].transcript;ev.results[i].isFinal?fin+=(fin?" ":"")+t:inter+=t}$("reviewerTranscript").value=(fin+" "+inter).trim()};try{reviewSpeech.start()}catch{}}
-  }catch{toast("تعذر الوصول إلى الميكروفون")}
+  if(reviewRec&&reviewRec.state==="recording"){
+    reviewSpeechActive=false;
+    try{reviewSpeech?.stop()}catch{}
+    reviewRec.stop();$("reviewerRecord").textContent="🎤 سجل ملاحظة صوتية";return;
+  }
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    reviewChunks=[];reviewVoiceBlob=null;
+    reviewRec=new MediaRecorder(st);
+    reviewRec.ondataavailable=e=>{if(e.data.size)reviewChunks.push(e.data)};
+    reviewRec.onstop=()=>{
+      reviewVoiceBlob=new Blob(reviewChunks,{type:reviewRec.mimeType||"audio/webm"});
+      $("reviewerAudio").src=URL.createObjectURL(reviewVoiceBlob);$("reviewerAudio").classList.remove("hidden");
+      st.getTracks().forEach(t=>t.stop());
+      reviewSpeechActive=false;try{reviewSpeech?.stop()}catch{}
+      if(!$("reviewerTranscript").value.trim())$("reviewerSpeechHint").textContent="تم حفظ التسجيل الصوتي. التفريغ التلقائي لم ينتج نصًا؛ يمكنك كتابة الملاحظة يدويًا.";
+    };
+    reviewRec.start();$("reviewerRecord").textContent="■ إيقاف التسجيل";
+    $("reviewerSpeechHint").textContent="جاري تشغيل التعرف على الكلام...";
+    startReviewerSpeech();
+  }catch{
+    $("reviewerSpeechHint").textContent="تعذر الوصول إلى الميكروفون. اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح.";
+    toast("تعذر الوصول إلى الميكروفون");
+  }
 };
 let swipeX=null;
 $("reviewerMedia").addEventListener("pointerdown",e=>{if(reviewerBusy)return;swipeX=e.clientX});
